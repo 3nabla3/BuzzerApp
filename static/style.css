@@ -1,0 +1,10 @@
+#buzzer {
+    color: red;
+    background-color: greenyellow;
+    border: none;
+    border-radius: 50px;
+    margin: auto;
+    width: 75%;
+    height: 200px;
+    cursor: pointer;
+}
