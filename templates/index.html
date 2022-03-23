@@ -16,20 +16,25 @@
 </button>
 
 <script>
+    let clicked = false;
+
     {% if g.clicked != None %}
-    // start prep
+        // start prep
         {% if g.clicked != request.cookies['user'] %}
             failure("{{ g.clicked }}");
         {% else %}
             success();
         {% endif %}
-    // end prep
+        // end prep
     {% endif %}
 
+    waitForClick();
+
     function failure(user) {
-        console.log("failure");
+        console.log("failure: " + user);
         document.getElementById("buzzer").innerHTML =
             "Too late! " + user + " already pressed the button";
+        clicked = true;
     }
 
     function success() {
@@ -39,11 +44,13 @@
     }
 
     function resetBuzzerText() {
+        console.log("reset buzzer text");
         document.getElementById("buzzer").innerHTML = "{{ request.cookies['user'] }}"
     }
 
     function logout() {
         console.log('logging out!');
+
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '{{ url_for('logout') }}')
         xhr.send();
@@ -55,23 +62,21 @@
     }
 
     function buzzerClick() {
+        if (clicked) return;
+        clicked = true;
+
         console.log('buzzer clicked!');
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '{{ url_for('click') }}')
 
-        xhr.setRequestHeader('Accept', 'application/json');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-
         xhr.onreadystatechange = function () {
             let resp = xhr.responseText;
             if (xhr.readyState === 4) {
-                console.log(resp);
+                console.log("resp: " + resp);
                 if (resp === "pressed")
-                    document.getElementById("buzzer").innerHTML = "You pressed the button!"
-                else if (resp !== "{{ request.cookies['user'] }}")
-                    failure(resp)
-                else
                     success();
+                else
+                    failure(resp);
             }
         }
         xhr.send();
@@ -90,6 +95,25 @@
                 }
             }
         }
+        xhr.send();
+    }
+
+    function waitForClick() {
+        console.log("wait for click");
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', "{{ url_for('check_clicked') }}");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                let resp = xhr.responseText;
+
+                if (resp !== "{{ request.cookies['user'] }}" &&
+                    resp !== "")
+                    failure(resp);
+            }
+        }
+
         xhr.send();
     }
 

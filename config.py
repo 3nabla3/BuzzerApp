@@ -1,6 +1,11 @@
 class GetConfig:
 	clicked = None
+	users = set()
 
+	@classmethod
+	def add_user(cls, user):
+		cls.users.add(user)
 
-	def __init__(self):
-		pass
+	@classmethod
+	def del_user(cls, user):
+		cls.users.remove(user)

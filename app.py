@@ -1,7 +1,11 @@
+import os
+import time
+
 from flask import Flask, session, render_template, request, flash, redirect, make_response, url_for, g
 from config import GetConfig
 
 app = Flask(__name__)
+app.secret_key = os.urandom(12).hex()
 
 
 @app.route('/')
@@ -23,19 +27,21 @@ def login():
 	user = request.form['user']
 	if user == "":
 		flash('Username cannot be empty!')
+	elif user in GetConfig.users:
+		flash('Username already taken!')
+	else:
+		resp = make_response(redirect(url_for('index')))
+		resp.set_cookie('user', user)
+		GetConfig.add_user(user)
+		return resp
 
-	resp = make_response(redirect(url_for('index')))
-	resp.set_cookie('user', user)
-
-	return resp
+	return render_template('login.html')
 
 
 @app.route('/logout', methods=['POST'])
 def logout():
 	resp = redirect(url_for('login'))
-
-	if request.cookies.get('user'):
-		resp.set_cookie('user', '', expires=0)
+	resp.set_cookie('user', '', expires=0)
 
 	return resp
 
@@ -45,8 +51,10 @@ def click():
 	if 'user' not in request.cookies:
 		return 'no user logged in'
 
-	if GetConfig.clicked is None:
-		GetConfig.clicked = request.cookies['user']
+	user = request.cookies['user']
+
+	if GetConfig.clicked is None or GetConfig.clicked == user:
+		GetConfig.clicked = user
 		return f'pressed'
 
 	return f'{GetConfig.clicked}'
@@ -57,6 +65,14 @@ def reset():
 	GetConfig.clicked = None
 
 	return f'reset'
+
+
+@app.route('/check', methods=['post'])
+def check_clicked():
+	while GetConfig.clicked is None:
+		time.sleep(0.3)
+
+	return GetConfig.clicked
 
 
 if __name__ == '__main__':
