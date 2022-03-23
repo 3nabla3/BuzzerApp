@@ -1,7 +1,8 @@
+import json
 import os
 import time
 
-from flask import Flask, session, render_template, request, flash, redirect, make_response, url_for, g
+from flask import Flask, render_template, request, flash, redirect, make_response, url_for, g
 from config import GetConfig
 
 app = Flask(__name__)
@@ -41,6 +42,8 @@ def login():
 @app.route('/logout', methods=['POST'])
 def logout():
 	resp = redirect(url_for('login'))
+	user = request.cookies.get('user')
+	GetConfig.del_user(user)
 	resp.set_cookie('user', '', expires=0)
 
 	return resp
@@ -55,7 +58,7 @@ def click():
 
 	if GetConfig.clicked is None or GetConfig.clicked == user:
 		GetConfig.clicked = user
-		return f'pressed'
+		return 'pressed'
 
 	return f'{GetConfig.clicked}'
 
@@ -63,16 +66,28 @@ def click():
 @app.route('/reset', methods=['POST'])
 def reset():
 	GetConfig.clicked = None
+	return 'reset'
 
-	return f'reset'
 
-
-@app.route('/check', methods=['post'])
-def check_clicked():
+@app.route('/wait-buzz', methods=['post'])
+def wait_buzz():
 	while GetConfig.clicked is None:
 		time.sleep(0.3)
 
 	return GetConfig.clicked
+
+
+@app.route('/wait-reset', methods=['POST'])
+def wait_reset():
+	while GetConfig.clicked is not None:
+		time.sleep(0.3)
+
+	return 'reset'
+
+
+@app.route('/get-users', methods=['GET'])
+def get_users():
+	return json.dumps(GetConfig.users)
 
 
 if __name__ == '__main__':

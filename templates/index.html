@@ -46,6 +46,7 @@
     function resetBuzzerText() {
         console.log("reset buzzer text");
         document.getElementById("buzzer").innerHTML = "{{ request.cookies['user'] }}"
+        clicked = false;
     }
 
     function logout() {
@@ -53,12 +54,13 @@
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '{{ url_for('logout') }}')
-        xhr.send();
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4)
                 window.location.reload();
         }
+
+        xhr.send();
     }
 
     function buzzerClick() {
@@ -70,8 +72,8 @@
         xhr.open('POST', '{{ url_for('click') }}')
 
         xhr.onreadystatechange = function () {
-            let resp = xhr.responseText;
             if (xhr.readyState === 4) {
+                let resp = xhr.responseText;
                 console.log("resp: " + resp);
                 if (resp === "pressed")
                     success();
@@ -90,9 +92,8 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 console.log(xhr.responseText);
-                if (xhr.responseText === "reset") {
+                if (xhr.responseText === "reset")
                     resetBuzzerText();
-                }
             }
         }
         xhr.send();
@@ -102,18 +103,34 @@
         console.log("wait for click");
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url_for('check_clicked') }}");
+        xhr.open('POST', "{{ url_for('wait_buzz') }}");
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
+                console.log("Someone buzzed!!");
                 let resp = xhr.responseText;
-
-                if (resp !== "{{ request.cookies['user'] }}" &&
-                    resp !== "")
+                if (resp !== "{{ request.cookies['user'] }}" && resp !== "")
                     failure(resp);
+                waitForReset();
             }
         }
 
+        xhr.send();
+    }
+
+    function waitForReset() {
+        console.log("wait for reset");
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', "{{ url_for('wait_reset') }}");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.responseText === "reset")
+                    resetBuzzerText();
+                waitForClick();
+            }
+        }
         xhr.send();
     }
 
