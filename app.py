@@ -1,12 +1,13 @@
-import json
 import os
-import time
 
 from flask import Flask, render_template, request, flash, redirect, make_response, url_for, g
+
+from api import api_bp
 from config import GetConfig
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12).hex()
+app.register_blueprint(api_bp)
 
 
 @app.route('/')
@@ -17,7 +18,7 @@ def index():  # put application's code here
 	if hasattr(GetConfig, 'clicked'):
 		g.clicked = GetConfig.clicked
 
-	return render_template('index.html')
+	return render_template('index.html', data=GetConfig.users)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -47,47 +48,6 @@ def logout():
 	resp.set_cookie('user', '', expires=0)
 
 	return resp
-
-
-@app.route('/click', methods=['POST'])
-def click():
-	if 'user' not in request.cookies:
-		return 'no user logged in'
-
-	user = request.cookies['user']
-
-	if GetConfig.clicked is None or GetConfig.clicked == user:
-		GetConfig.clicked = user
-		return 'pressed'
-
-	return f'{GetConfig.clicked}'
-
-
-@app.route('/reset', methods=['POST'])
-def reset():
-	GetConfig.clicked = None
-	return 'reset'
-
-
-@app.route('/wait-buzz', methods=['post'])
-def wait_buzz():
-	while GetConfig.clicked is None:
-		time.sleep(0.3)
-
-	return GetConfig.clicked
-
-
-@app.route('/wait-reset', methods=['POST'])
-def wait_reset():
-	while GetConfig.clicked is not None:
-		time.sleep(0.3)
-
-	return 'reset'
-
-
-@app.route('/get-users', methods=['GET'])
-def get_users():
-	return json.dumps(GetConfig.users)
 
 
 if __name__ == '__main__':

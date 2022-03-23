@@ -15,6 +15,12 @@
     {{ request.cookies.get('user') }}
 </button>
 
+<h2>List of players!</h2>
+
+<ul id="player-list">
+    {{ data }}
+</ul>
+
 <script>
     let clicked = false;
 
@@ -56,7 +62,7 @@
         xhr.open('POST', '{{ url_for('logout') }}')
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4)
+            if (xhr.readyState === 4 && xhr.status === 200)
                 window.location.reload();
         }
 
@@ -69,10 +75,10 @@
 
         console.log('buzzer clicked!');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('click') }}')
+        xhr.open('POST', '{{ url_for('api.click') }}')
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 let resp = xhr.responseText;
                 console.log("resp: " + resp);
                 if (resp === "pressed")
@@ -87,10 +93,10 @@
     function resetBuzzer() {
         console.log('button reset!');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('reset') }}')
+        xhr.open('POST', '{{ url_for('api.reset') }}')
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log(xhr.responseText);
                 if (xhr.responseText === "reset")
                     resetBuzzerText();
@@ -103,10 +109,10 @@
         console.log("wait for click");
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url_for('wait_buzz') }}");
+        xhr.open('POST', "{{ url_for('api.wait_buzz') }}");
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log("Someone buzzed!!");
                 let resp = xhr.responseText;
                 if (resp !== "{{ request.cookies['user'] }}" && resp !== "")
@@ -122,10 +128,10 @@
         console.log("wait for reset");
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url_for('wait_reset') }}");
+        xhr.open('POST', "{{ url_for('api.wait_reset') }}");
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 if (xhr.responseText === "reset")
                     resetBuzzerText();
                 waitForClick();

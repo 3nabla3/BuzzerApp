@@ -9,6 +9,6 @@ class GetConfig:
 
 	@classmethod
 	def del_user(cls, user):
-		print(f"User {user} logged out")
 		if user in cls.users:
+			print(f"User {user} logged out")
 			cls.users.remove(user)
