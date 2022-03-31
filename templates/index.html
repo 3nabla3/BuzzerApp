@@ -1,3 +1,4 @@
+{# TODO Make a base html file to make the other html files as light as possible #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +16,8 @@
     {{ request.cookies.get('user') }}
 </button>
 
-<h2>List of players!</h2>
-
-<ul id="player-list">
-    {{ data }}
-</ul>
+<h2 id="player-title"></h2>
+<ul id="player-list"></ul>
 
 <script>
     let clicked = false;
@@ -34,25 +32,32 @@
         // end prep
     {% endif %}
 
+    updateUserList();
     waitForClick();
 
     function failure(user) {
         console.log("failure: " + user);
-        document.getElementById("buzzer").innerHTML =
+        let buzzer = document.getElementById("buzzer");
+        buzzer.innerHTML =
             "Too late! " + user + " already pressed the button";
+        buzzer.style.backgroundColor = "red";
         clicked = true;
     }
 
     function success() {
         console.log("success");
-        document.getElementById("buzzer").innerHTML =
+        let buzzer = document.getElementById("buzzer");
+        buzzer.innerHTML =
             "You pressed the button!";
+        buzzer.style.backgroundColor = "green";
     }
 
     function resetBuzzerText() {
         console.log("reset buzzer text");
-        document.getElementById("buzzer").innerHTML = "{{ request.cookies['user'] }}"
+        let buzzer = document.getElementById("buzzer");
+        buzzer.innerHTML = "{{ request.cookies['user'] }}"
         clicked = false;
+        buzzer.style.backgroundColor = "turquoise"
     }
 
     function logout() {
@@ -138,6 +143,35 @@
             }
         }
         xhr.send();
+    }
+
+
+    async function updateUserList() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '{{ url_for('api.get_users') }}')
+        xhr.onreadystatechange = async function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let userList = JSON.parse(xhr.responseText);
+                updateUserListText(userList);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await updateUserList();
+            }
+        }
+        xhr.send();
+    }
+
+    function updateUserListText(userList) {
+        let title = document.getElementById('player-title');
+        if (userList.length > 1)
+            title.innerHTML = "Other players:"
+        else
+            title.innerHTML = "Oh no, you're playing alone!"
+
+        let list = document.getElementById('player-list');
+        list.innerHTML = "";
+        for (let user of userList)
+            if (user !== '{{ request.cookies['user'] }}')
+                list.innerHTML += `<li>${user}</li>`
     }
 
 </script>

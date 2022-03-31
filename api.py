@@ -1,6 +1,5 @@
 import asyncio
 import json
-import time
 
 from flask import Blueprint, request, make_response
 
@@ -9,6 +8,8 @@ from config import GetConfig
 api_bp = Blueprint('api', __name__)
 
 
+# TODO: send a timestamp with the request and wait 1s to make sure the
+# TODO: person who clicked first gets the win
 @api_bp.route('/click', methods=['POST'])
 def click():
 	if 'user' not in request.cookies:

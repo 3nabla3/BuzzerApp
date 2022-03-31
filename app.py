@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, render_template, request, flash, redirect, make_response, url_for, g
@@ -10,6 +11,11 @@ app.secret_key = os.urandom(12).hex()
 app.register_blueprint(api_bp)
 
 
+@app.errorhandler(404)
+def not_found(_e):
+	return redirect(url_for('index'))
+
+
 @app.route('/')
 def index():  # put application's code here
 	if 'user' not in request.cookies:
@@ -18,7 +24,8 @@ def index():  # put application's code here
 	if hasattr(GetConfig, 'clicked'):
 		g.clicked = GetConfig.clicked
 
-	return render_template('index.html', data=GetConfig.users)
+	data = json.dumps(list(GetConfig.users))
+	return render_template('index.html', data=data)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -26,7 +33,7 @@ def login():
 	if request.method == 'GET':
 		return render_template('login.html')
 
-	user = request.form['user']
+	user = request.form['user'].strip()
 	if user == "":
 		flash('Username cannot be empty!')
 	elif user in GetConfig.users:
