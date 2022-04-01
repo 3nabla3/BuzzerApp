@@ -32,7 +32,7 @@
         // end prep
     {% endif %}
 
-    updateUserList();
+    {#updateUserList();#}
     waitForClick();
 
     function failure(user) {
@@ -79,8 +79,13 @@
         clicked = true;
 
         console.log('buzzer clicked!');
+        // record the time that the buzzer was clicked
+        let ts = Date.now()/1000;
+
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('api.click') }}')
+        xhr.open('POST', '{{ url_for('api.click') }}', true)
+
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -92,7 +97,7 @@
                     failure(resp);
             }
         }
-        xhr.send();
+        xhr.send("ts=" + ts);
     }
 
     function resetBuzzer() {
