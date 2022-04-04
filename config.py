@@ -4,7 +4,7 @@ class GetConfig:
 
 	# record the timestamps of all buzzes 'time_delay' seconds after the first one is received
 	# to account for lag or network latency
-	time_delay = 3
+	time_delay = 1
 	clicks = {}  # collection of all clicks while the server is delaying
 	wait_until = None  # timestamp until the delay is over
 

@@ -1,5 +1,5 @@
 #buzzer {
-    color: red;
+    color: darkred;
     background-color: turquoise;
     border: none;
     border-radius: 50px;
@@ -7,4 +7,5 @@
     width: 75%;
     height: 200px;
     cursor: pointer;
+    font-size: 40px;
 }

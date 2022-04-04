@@ -3,7 +3,7 @@ import datetime
 import json
 from time import time, sleep
 
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, escape
 
 from config import GetConfig
 
@@ -11,6 +11,8 @@ api = Blueprint('api', __name__)
 
 
 # TODO: make sure the timestamp seems legit before accepting it as valid
+# TODO: should I really accept timestamps?
+#  1s off on a clock can make a huge difference
 @api.route('/click', methods=['POST'])
 def click():
 	if 'user' not in request.cookies:
@@ -46,7 +48,7 @@ def click():
 		return 'pressed'
 
 	# if not, return the username of the winner
-	return f'{GetConfig.clicked}'
+	return escape(GetConfig.clicked)
 
 
 @api.route('/reset', methods=['POST'])
@@ -64,7 +66,7 @@ def wait_buzz():
 	while GetConfig.clicked is None:
 		sleep(0.3)
 
-	return GetConfig.clicked
+	return escape(GetConfig.clicked)
 
 
 @api.route('/wait-reset', methods=['POST'])
@@ -79,6 +81,8 @@ def wait_reset():
 @api.route('/get-users', methods=['GET'])
 def get_users():
 	# return a json containing all the registered users
-	resp = make_response(json.dumps(list(GetConfig.users)))
+	sanitized = [escape(user) for user in GetConfig.users]
+
+	resp = make_response(json.dumps(sanitized))
 	resp.headers['Content-Type'] = 'application/json'
-	return resp, 3003030012304123401234
+	return resp

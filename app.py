@@ -1,7 +1,7 @@
-import json
 import os
 
-from flask import Flask, render_template, request, flash, redirect, make_response, url_for, g, send_file
+from flask import Flask, render_template, request, flash,\
+	redirect, make_response, url_for, g, send_file, escape
 
 from api import api
 from config import GetConfig
@@ -29,6 +29,12 @@ def index():
 	if 'user' not in request.cookies:
 		return redirect('login', code=307)
 
+	# if the cookie is valid but the user isn't registered within the app,
+	# implicitly register the user
+	user = request.cookies['user']
+	if user not in GetConfig.users:
+		GetConfig.add_user(user)
+
 	# set this for use in jinja parsing
 	g.clicked = GetConfig.clicked
 	resp = make_response(render_template('index.html'))
@@ -42,6 +48,7 @@ def login():
 
 	# remove trailing whitespace on username
 	user = request.form['user'].strip()
+
 	if user == "":
 		flash('Username cannot be empty!')
 		code = 400  # bad request
@@ -67,6 +74,9 @@ def logout():
 	resp.set_cookie('user', '', expires=0)
 
 	return resp
+
+
+# TODO: Make a special page that only an admin can view to kick users out and other privileged things
 
 
 if __name__ == '__main__':

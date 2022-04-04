@@ -22,6 +22,12 @@
 <script>
     let clicked = false;
 
+    colors = Object.freeze({
+        'NORMAL': 'turquoise',
+        'SUCCESS': 'green',
+        'FAILURE': 'orange'
+    });
+
     {% if g.clicked != None %}
         // start prep
         {% if g.clicked != request.cookies['user'] %}
@@ -32,7 +38,7 @@
         // end prep
     {% endif %}
 
-    {#updateUserList();#}
+    updateUserList();
     waitForClick();
 
     function failure(user) {
@@ -40,7 +46,7 @@
         let buzzer = document.getElementById("buzzer");
         buzzer.innerHTML =
             "Too late! " + user + " already pressed the button";
-        buzzer.style.backgroundColor = "red";
+        buzzer.style.backgroundColor = colors.FAILURE;
         clicked = true;
     }
 
@@ -49,15 +55,15 @@
         let buzzer = document.getElementById("buzzer");
         buzzer.innerHTML =
             "You pressed the button!";
-        buzzer.style.backgroundColor = "green";
+        buzzer.style.backgroundColor = colors.SUCCESS;
     }
 
     function resetBuzzerText() {
         console.log("reset buzzer text");
         let buzzer = document.getElementById("buzzer");
         buzzer.innerHTML = "{{ request.cookies['user'] }}"
+        buzzer.style.backgroundColor = colors.NORMAL;
         clicked = false;
-        buzzer.style.backgroundColor = "turquoise"
     }
 
     function logout() {
@@ -101,6 +107,9 @@
     }
 
     function resetBuzzer() {
+        if (!clicked) return;
+        clicked = false;
+
         console.log('button reset!');
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '{{ url_for('api.reset') }}')
@@ -151,7 +160,7 @@
     }
 
 
-    async function updateUserList() {
+    function updateUserList() {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', '{{ url_for('api.get_users') }}')
         xhr.onreadystatechange = async function () {
@@ -159,7 +168,7 @@
                 let userList = JSON.parse(xhr.responseText);
                 updateUserListText(userList);
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                await updateUserList();
+                updateUserList();
             }
         }
         xhr.send();
@@ -174,9 +183,10 @@
 
         let list = document.getElementById('player-list');
         list.innerHTML = "";
-        for (let user of userList)
+        for (let user of userList) {
             if (user !== '{{ request.cookies['user'] }}')
                 list.innerHTML += `<li>${user}</li>`
+        }
     }
 
 </script>
