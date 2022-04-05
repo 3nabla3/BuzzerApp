@@ -1,14 +1,14 @@
-{# TODO Make a base html file to make the other html files as light as possible #}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="/static/buzzer.jpg">
-    <title>Buzzer app</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
+{% block script %}
+    <script src="{{ url_for('static', filename='buzzer.js') }}"></script>
+{% endblock %}
+
+{% block header %}
+    <h1>{% block title %}Buzzer!{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
 <button type="button" id="change-user" onclick="logout()">Change username</button>
 <button type="button" id="reset-button" onclick="resetBuzzer()">Reset button</button>
 
@@ -20,13 +20,15 @@
 <ul id="player-list"></ul>
 
 <script>
-    let clicked = false;
-
-    colors = Object.freeze({
-        'NORMAL': 'turquoise',
-        'SUCCESS': 'green',
-        'FAILURE': 'orange'
-    });
+    setup(
+        '{{ request.cookies['user'] }}',
+        '{{ url_for('logout') }}',
+        '{{ url_for('api.click') }}',
+        '{{ url_for('api.reset') }}',
+        '{{ url_for('api.wait_buzz') }}',
+        '{{ url_for('api.wait_reset') }}',
+        '{{ url_for('api.get_users') }}'
+    );
 
     {% if g.clicked != None %}
         // start prep
@@ -40,155 +42,5 @@
 
     updateUserList();
     waitForClick();
-
-    function failure(user) {
-        console.log("failure: " + user);
-        let buzzer = document.getElementById("buzzer");
-        buzzer.innerHTML =
-            "Too late! " + user + " already pressed the button";
-        buzzer.style.backgroundColor = colors.FAILURE;
-        clicked = true;
-    }
-
-    function success() {
-        console.log("success");
-        let buzzer = document.getElementById("buzzer");
-        buzzer.innerHTML =
-            "You pressed the button!";
-        buzzer.style.backgroundColor = colors.SUCCESS;
-    }
-
-    function resetBuzzerText() {
-        console.log("reset buzzer text");
-        let buzzer = document.getElementById("buzzer");
-        buzzer.innerHTML = "{{ request.cookies['user'] }}"
-        buzzer.style.backgroundColor = colors.NORMAL;
-        clicked = false;
-    }
-
-    function logout() {
-        console.log('logging out!');
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('logout') }}')
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200)
-                window.location.reload();
-        }
-
-        xhr.send();
-    }
-
-    function buzzerClick() {
-        if (clicked) return;
-        clicked = true;
-
-        console.log('buzzer clicked!');
-        // record the time that the buzzer was clicked
-        let ts = Date.now()/1000;
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('api.click') }}', true)
-
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let resp = xhr.responseText;
-                console.log("resp: " + resp);
-                if (resp === "pressed")
-                    success();
-                else
-                    failure(resp);
-            }
-        }
-        xhr.send("ts=" + ts);
-    }
-
-    function resetBuzzer() {
-        if (!clicked) return;
-        clicked = false;
-
-        console.log('button reset!');
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{{ url_for('api.reset') }}')
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log(xhr.responseText);
-                if (xhr.responseText === "reset")
-                    resetBuzzerText();
-            }
-        }
-        xhr.send();
-    }
-
-    function waitForClick() {
-        console.log("wait for click");
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url_for('api.wait_buzz') }}");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log("Someone buzzed!!");
-                let resp = xhr.responseText;
-                if (resp !== "{{ request.cookies['user'] }}" && resp !== "")
-                    failure(resp);
-                waitForReset();
-            }
-        }
-
-        xhr.send();
-    }
-
-    function waitForReset() {
-        console.log("wait for reset");
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url_for('api.wait_reset') }}");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                if (xhr.responseText === "reset")
-                    resetBuzzerText();
-                waitForClick();
-            }
-        }
-        xhr.send();
-    }
-
-
-    function updateUserList() {
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', '{{ url_for('api.get_users') }}')
-        xhr.onreadystatechange = async function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let userList = JSON.parse(xhr.responseText);
-                updateUserListText(userList);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                updateUserList();
-            }
-        }
-        xhr.send();
-    }
-
-    function updateUserListText(userList) {
-        let title = document.getElementById('player-title');
-        if (userList.length > 1)
-            title.innerHTML = "Other players:"
-        else
-            title.innerHTML = "Oh no, you're playing alone!"
-
-        let list = document.getElementById('player-list');
-        list.innerHTML = "";
-        for (let user of userList) {
-            if (user !== '{{ request.cookies['user'] }}')
-                list.innerHTML += `<li>${user}</li>`
-        }
-    }
-
 </script>
-</body>
-</html>
+{% endblock content %}

@@ -44,6 +44,8 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'GET':
+		if 'user' in request.cookies and request.cookies['user'].strip() in GetConfig.users:
+			return redirect(url_for('index'))
 		return render_template('login.html')
 
 	# remove trailing whitespace on username
@@ -53,7 +55,7 @@ def login():
 		flash('Username cannot be empty!')
 		code = 400  # bad request
 	elif user in GetConfig.users:
-		flash('Username already taken!')
+		flash(f'Username {user} already taken!')
 		code = 409  # conflict
 	else:
 		# register the user and set its cookie

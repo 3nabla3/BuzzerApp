@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="/static/buzzer.jpg">
-    <title>Login</title>
-</head>
-<body>
-<ul>
-    {% for mess in get_flashed_messages() %}
-        <li>{{ mess }}</li>
-    {% endfor %}
-</ul>
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Login{% endblock %}</h1>
+{% endblock %}
 
-<form method="post">
-    <label for="user">Enter your username:</label>
-    <br>
-    <input id="user" name="user" required>
-    <input type="submit" value="Let's go!">
-</form>
-</body>
-</html>
+{% block content %}
+    <div class="centered">
+        <form method="post">
+            <div>
+                <label for="user">Enter your username:</label>
+                <br>
+                <input name="user" required>
+                <input type="submit" value="Let's go!">
+            </div>
+        </form>
+    </div>
+{% endblock %}
