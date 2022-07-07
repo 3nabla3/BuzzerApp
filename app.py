@@ -33,7 +33,7 @@ def index():
 	# implicitly register the user
 	user = request.cookies['user']
 	if user not in GetConfig.users:
-		GetConfig.add_user(user)
+		GetConfig.add_user(user, implied=True)
 
 	# set this for use in jinja parsing
 	g.clicked = GetConfig.clicked

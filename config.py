@@ -9,8 +9,11 @@ class GetConfig:
 	wait_until = None  # timestamp until the delay is over
 
 	@classmethod
-	def add_user(cls, user):
-		print(f"User {user} registered")
+	def add_user(cls, user, implied=False):
+		if implied:
+			print(f"User {user} registered implicitly")
+		else:
+			print(f"User {user} registered")
 		cls.users.add(user)
 
 	@classmethod

@@ -12,7 +12,8 @@ colors = Object.freeze({
     'NORMAL': 'turquoise', 'SUCCESS': 'green', 'FAILURE': 'orange'
 });
 
-function setup(user, logout_url, api_click_url, api_reset_url, api_wait_buzz_url, api_wait_reset_url, api_get_users_url) {
+function setup(user, logout_url, api_click_url, api_reset_url,
+               api_wait_buzz_url, api_wait_reset_url, api_get_users_url) {
     g_user = user;
     g_logout_url = logout_url;
     g_api_click_url = api_click_url

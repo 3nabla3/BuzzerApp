@@ -7,11 +7,15 @@
     {% block script %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
+
 <body>
-<header>{% block header %}{% endblock %}</header>
+    <header>
+        {% block header %}{% endblock %}
+    </header>
 {% for mess in get_flashed_messages() %}
     <div class="flash">{{ mess }}</div>
 {% endfor %}
 {% block content %}{% endblock %}
 </body>
+
 </html>
