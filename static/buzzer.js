@@ -9,7 +9,7 @@ let g_api_wait_reset_url = null;
 let g_api_get_users_url = null;
 
 colors = Object.freeze({
-    'NORMAL': 'turquoise', 'SUCCESS': 'green', 'FAILURE': 'orange'
+    'NORMAL': '#508991', 'SUCCESS': 'green', 'FAILURE': 'orange'
 });
 
 function setup(user, logout_url, api_click_url, api_reset_url,

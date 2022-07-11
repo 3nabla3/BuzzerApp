@@ -45,7 +45,9 @@ def index():
 def login():
 	if request.method == 'GET':
 		if 'user' in request.cookies and request.cookies['user'].strip() in GetConfig.users:
-			return redirect(url_for('index'))
+			return redirect(url_for('logout'))
+		for i in range(10):
+			flash(f"{i}: This is a simple flashed message")
 		return render_template('login.html')
 
 	# remove trailing whitespace on username

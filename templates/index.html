@@ -9,8 +9,10 @@
 {% endblock %}
 
 {% block content %}
-<button type="button" id="change-user" onclick="logout()">Change username</button>
-<button type="button" id="reset-button" onclick="resetBuzzer()">Reset button</button>
+<div id="aux-div">
+    <button type="button" class="aux" id="change-user" onclick="logout()">Change username</button>
+    <button type="button" class="aux" id="reset-button" onclick="resetBuzzer()">Reset button</button>
+</div>
 
 <div class="centered">
     <button type="button" id="buzzer" onclick="buzzerClick()">
@@ -32,6 +34,7 @@
         '{{ url_for('api.get_users') }}'
     );
 
+    {# check if someone already buzzed and set the view accordingly #}
     {% if g.clicked != None %}
         // start prep
         {% if g.clicked != request.cookies['user'] %}
@@ -39,6 +42,7 @@
         {% else %}
             success();
         {% endif %}
+        clicked = true;
         // end prep
     {% endif %}
 

@@ -12,10 +12,46 @@
     <header>
         {% block header %}{% endblock %}
     </header>
-{% for mess in get_flashed_messages() %}
-    <div class="flash">{{ mess }}</div>
-{% endfor %}
-{% block content %}{% endblock %}
-</body>
+    <section id="flashed-mess">
+        {% for mess in get_flashed_messages() %}
+            <div class="flash">{{ mess }}</div>
+        {% endfor %}
+    </section>
+    <section id="aux-sec">
 
+    </section>
+    <div class="centered">
+
+    </div>
+
+{# used to fade off the flashed messages #}
+<script>
+    function fade(element) {
+        let animationTime = 2;
+        let stepTime = 0.05;
+
+        let initialOp = 1; // initial opacity
+        let op = initialOp;
+        let per = stepTime / animationTime
+        console.log(per);
+        const timer = setInterval(function () {
+            if (op <= 0.1) {
+                clearInterval(timer);
+                element.style.display = 'none';
+            }
+            element.style.opacity = op;
+            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+            op -= initialOp * per;
+        }, stepTime * 1000);
+    }
+
+    flashed = document.getElementsByClassName("flash");
+    for (let i = 0; i < flashed.length; i++) {
+        {#fade(flashed[i]);#}
+        console.log("Fading element");
+    }
+</script>
+
+</body>
 </html>
+

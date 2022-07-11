@@ -1,5 +1,4 @@
-/* TODO: make this shit actually look decent lmao */
-
+/* Color theme: */
 /*74B3CE*/
 /*508991*/
 /*172A3A*/
@@ -28,6 +27,13 @@ input {
     font-size: 1rem;
 }
 
+#login-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
 .flash {
     background-color: #09BC8A;
     display: flex;
@@ -40,24 +46,38 @@ input {
 }
 
 .centered {
-    position: absolute;
-    top: 25%;
-    left: 15%;
+    /*left: 0;*/
     background-color: #508991;
-    text-align: center;
-    padding: 10%;
-    width: 50%;
-    border-radius: 10px;
+    /*text-align: center;*/
+    height: 300px;
+    /*width: 100%;*/
+    /*border-radius: 10px;*/
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
 }
 
 #buzzer {
     color: darkred;
-    background-color: turquoise;
+    background-color: inherit;
+    border-radius: inherit;
     border: none;
-    /*border-radius: 50px;*/
-    /*margin: auto;*/
-    /*width: 75%;*/
+    height: 100%;
+    width: 100%;
+    font-size: 60px;
+}
+
+#aux-div {
+    background-color: red;
     /*height: 200px;*/
-    /*cursor: pointer;*/
-    /*font-size: 40px;*/
+}
+
+#flashed-mess {
+    overflow: clip;
+    height: 150px;
+}
+
+#aux-sec {
+    background-color: red;
+    height: 150px;
 }
