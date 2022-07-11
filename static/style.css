@@ -19,16 +19,6 @@ h1 {
     text-align: center;
 }
 
-form {
-    background-color: #508991;
-    text-align: center;
-    padding: 50px;
-    width: 50%;
-    margin: auto;
-    border-radius: 10px;
-    height: 200px;
-}
-
 label {
     font-size: 2rem;
 }
@@ -49,29 +39,25 @@ input {
     border-radius: 10px;
 }
 
-form div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 100%;
-}
-
 .centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 75vh;
+    position: absolute;
+    top: 25%;
+    left: 15%;
+    background-color: #508991;
+    text-align: center;
+    padding: 10%;
+    width: 50%;
+    border-radius: 10px;
 }
 
 #buzzer {
     color: darkred;
     background-color: turquoise;
     border: none;
-    border-radius: 50px;
-    margin: auto;
-    width: 75%;
-    height: 200px;
-    cursor: pointer;
-    font-size: 40px;
+    /*border-radius: 50px;*/
+    /*margin: auto;*/
+    /*width: 75%;*/
+    /*height: 200px;*/
+    /*cursor: pointer;*/
+    /*font-size: 40px;*/
 }

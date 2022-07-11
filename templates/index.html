@@ -12,9 +12,11 @@
 <button type="button" id="change-user" onclick="logout()">Change username</button>
 <button type="button" id="reset-button" onclick="resetBuzzer()">Reset button</button>
 
-<button type="button" id="buzzer" onclick="buzzerClick()">
-    {{ request.cookies.get('user') }}
-</button>
+<div class="centered">
+    <button type="button" id="buzzer" onclick="buzzerClick()">
+        {{ request.cookies.get('user') }}
+    </button>
+</div>
 
 <h2 id="player-title"></h2>
 <ul id="player-list"></ul>
