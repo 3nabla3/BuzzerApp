@@ -5,12 +5,40 @@
 /*004346*/
 /*09BC8A*/
 
+@keyframes zoomIn {
+    0% {
+        transform: scale(0%);
+    }
+    100% {
+        transform: scale(100%);
+    }
+}
+
+@keyframes zoomOut {
+    0% {
+        transform: scale(100%);
+    }
+    100% {
+        transform: scale(0%);
+    }
+}
+
 body {
     background-color: #172A3A;
 }
 
+div {
+    border-radius: 10px;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+}
+
 header {
     background-color: #74B3CE;
+    border-radius: 10px;
 }
 
 h1 {
@@ -30,8 +58,11 @@ input {
 #login-form {
     height: 100%;
     display: flex;
+    align-items: center;
     flex-direction: column;
     justify-content: space-evenly;
+    margin: auto;
+    width: 25%;
 }
 
 .flash {
@@ -42,42 +73,49 @@ input {
     margin: auto;
     padding: 1em;
     height: 2em;
-    border-radius: 10px;
-}
-
-.centered {
-    /*left: 0;*/
-    background-color: #508991;
-    /*text-align: center;*/
-    height: 300px;
-    /*width: 100%;*/
-    /*border-radius: 10px;*/
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
 }
 
 #buzzer {
-    color: darkred;
+    color: inherit;
     background-color: inherit;
-    border-radius: inherit;
-    border: none;
     height: 100%;
     width: 100%;
     font-size: 60px;
 }
 
-#aux-div {
-    background-color: red;
-    /*height: 200px;*/
-}
-
-#flashed-mess {
-    overflow: clip;
-    height: 150px;
-}
-
 #aux-sec {
-    background-color: red;
+    display: flex;
+    justify-content: space-evenly;
     height: 150px;
 }
+
+.aux-div {
+    animation: 0.2s ease-in-out 1 zoomIn;
+    display: flex;
+    align-items: center;
+    width: 25%;
+}
+
+.aux-btn {
+    color: black;
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    background-color: #09BC8A;
+
+}
+
+#flashed-div {
+    overflow: scroll;
+    width: 50%;
+}
+
+#centered {
+    animation: 0.2s ease-in-out 1 zoomIn;
+    background-color: #508991;
+    color: black;
+    height: 450px;
+    width: 90%;
+    margin: auto;
+}
+

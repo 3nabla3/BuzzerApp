@@ -7,13 +7,11 @@ let g_api_reset_url = null;
 let g_api_wait_buzz_url = null;
 let g_api_wait_reset_url = null;
 let g_api_get_users_url = null;
-
-colors = Object.freeze({
-    'NORMAL': '#508991', 'SUCCESS': 'green', 'FAILURE': 'orange'
-});
+let colors = null;
 
 function setup(user, logout_url, api_click_url, api_reset_url,
-               api_wait_buzz_url, api_wait_reset_url, api_get_users_url) {
+               api_wait_buzz_url, api_wait_reset_url, api_get_users_url,
+               successColor, failureColor) {
     g_user = user;
     g_logout_url = logout_url;
     g_api_click_url = api_click_url
@@ -21,13 +19,21 @@ function setup(user, logout_url, api_click_url, api_reset_url,
     g_api_wait_buzz_url = api_wait_buzz_url;
     g_api_wait_reset_url = api_wait_reset_url;
     g_api_get_users_url = api_get_users_url;
+
+    // get the current color of the center div to set as the normal color
+    // avoids to define normal color twice in css and javascript
+    let center = document.getElementById("centered");
+    colors = Object.freeze({
+        'NORMAL': center.style.backgroundColor,
+        'SUCCESS': successColor, 'FAILURE': failureColor
+    });
 }
 
 function failure(user) {
     console.log("failure: " + user);
     let buzzer = document.getElementById("buzzer");
     buzzer.innerHTML = "Too late! " + user + " already pressed the button";
-    buzzer.style.backgroundColor = colors.FAILURE;
+    setCenterColor(colors.FAILURE);
     clicked = true;
 }
 
@@ -35,25 +41,36 @@ function success() {
     console.log("success");
     let buzzer = document.getElementById("buzzer");
     buzzer.innerHTML = "You pressed the button!";
-    buzzer.style.backgroundColor = colors.SUCCESS;
+    setCenterColor(colors.SUCCESS)
 }
 
-function resetBuzzerText() {
-    console.log("reset buzzer text");
+function setCenterColor(color) {
+    let buzzer = document.getElementById("centered");
+    buzzer.style.backgroundColor = color;
+}
+
+function resetBuzzerAppearance() {
     let buzzer = document.getElementById("buzzer");
+    console.log("reset buzzer text");
     buzzer.innerHTML = g_user;
-    buzzer.style.backgroundColor = colors.NORMAL;
+    setCenterColor(colors.NORMAL);
     clicked = false;
 }
 
 function logout() {
+    let center = document.getElementById("centered");
+    center.style.animation = "0.2s ease-in-out 1 zoomOut";
+
     console.log('logging out!');
 
     let xhr = new XMLHttpRequest();
     xhr.open('POST', g_logout_url)
 
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) window.location.reload();
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            window.location.reload();
+            console.log(xhr.responseText);
+        }
     }
 
     xhr.send();
@@ -82,7 +99,7 @@ function buzzerClick() {
     xhr.send("ts=" + ts);
 }
 
-function resetBuzzer() {
+function sendResetBuzzerSig() {
     if (!clicked) return;
     clicked = false;
 
@@ -93,7 +110,7 @@ function resetBuzzer() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
-            if (xhr.responseText === "reset") resetBuzzerText();
+            if (xhr.responseText === "reset") resetBuzzerAppearance();
         }
     }
     xhr.send();
@@ -125,7 +142,7 @@ function waitForReset() {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            if (xhr.responseText === "reset") resetBuzzerText();
+            if (xhr.responseText === "reset") resetBuzzerAppearance();
             waitForClick();
         }
     }

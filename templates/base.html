@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="/static/buzzer.png">
-    {% block script %}{% endblock %}
+    {% block scriptSrc %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -12,22 +12,35 @@
     <header>
         {% block header %}{% endblock %}
     </header>
-    <section id="flashed-mess">
-        {% for mess in get_flashed_messages() %}
-            <div class="flash">{{ mess }}</div>
-        {% endfor %}
-    </section>
+
     <section id="aux-sec">
+        <div class="aux-div">
+            {% block leftAux %}
+            {% endblock %}
+        </div>
 
+        <div id="flashed-div">
+            {% for mess in get_flashed_messages() %}
+                <div class="flash">{{ mess }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="aux-div">
+            {% block rightAux %}
+            {% endblock %}
+        </div>
     </section>
-    <div class="centered">
 
+    <div id="centered">
+        {% block centered %}
+        {% endblock %}
     </div>
-
+    {% block otherContent %}
+    {% endblock %}
 {# used to fade off the flashed messages #}
 <script>
     function fade(element) {
-        let animationTime = 2;
+        let animationTime = 5;
         let stepTime = 0.05;
 
         let initialOp = 1; // initial opacity
@@ -47,9 +60,10 @@
 
     flashed = document.getElementsByClassName("flash");
     for (let i = 0; i < flashed.length; i++) {
-        {#fade(flashed[i]);#}
+        fade(flashed[i]);
         console.log("Fading element");
     }
+
 </script>
 
 </body>
