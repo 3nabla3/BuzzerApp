@@ -3,14 +3,16 @@
     <h1>{% block title %}Login{% endblock %}</h1>
 {% endblock %}
 
-{% block content %}
-    <div class="centered">
-        <form action="/login" method="post">
-            <div>
-                <label for="user">Enter your username:</label>
-                <input name="user" id="user" placeholder="username" required/>
-                <input type="submit" value="Let's go!"/>
-            </div>
-        </form>
-    </div>
+{% block leftAux %}
+{% endblock %}
+
+{% block rightAux %}
+{% endblock %}
+
+{% block centered %}
+    <form action="/login" method="post" id="login-form">
+        <label for="user">Enter your username:</label>
+        <input name="user" id="user" placeholder="Be creative..." required/>
+        <input type="submit" value="Let's go!"/>
+    </form>
 {% endblock %}

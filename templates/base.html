@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="/static/buzzer.png">
-    {% block script %}{% endblock %}
+    {% block scriptSrc %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -12,10 +12,60 @@
     <header>
         {% block header %}{% endblock %}
     </header>
-{% for mess in get_flashed_messages() %}
-    <div class="flash">{{ mess }}</div>
-{% endfor %}
-{% block content %}{% endblock %}
-</body>
 
+    <section id="aux-sec">
+        <div class="aux-div">
+            {% block leftAux %}
+            {% endblock %}
+        </div>
+
+        <div id="flashed-div">
+            {% for mess in get_flashed_messages() %}
+                <div class="flash">{{ mess }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="aux-div">
+            {% block rightAux %}
+            {% endblock %}
+        </div>
+    </section>
+
+    <div id="centered">
+        {% block centered %}
+        {% endblock %}
+    </div>
+    {% block otherContent %}
+    {% endblock %}
+{# used to fade off the flashed messages #}
+<script>
+    function fade(element) {
+        let animationTime = 5;
+        let stepTime = 0.05;
+
+        let initialOp = 1; // initial opacity
+        let op = initialOp;
+        let per = stepTime / animationTime
+        console.log(per);
+        const timer = setInterval(function () {
+            if (op <= 0.1) {
+                clearInterval(timer);
+                element.style.display = 'none';
+            }
+            element.style.opacity = op;
+            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+            op -= initialOp * per;
+        }, stepTime * 1000);
+    }
+
+    flashed = document.getElementsByClassName("flash");
+    for (let i = 0; i < flashed.length; i++) {
+        fade(flashed[i]);
+        console.log("Fading element");
+    }
+
+</script>
+
+</body>
 </html>
+

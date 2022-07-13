@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block script %}
+{% block scriptSrc %}
     <script src="{{ url_for('static', filename='buzzer.js') }}"></script>
 {% endblock %}
 
@@ -8,39 +8,49 @@
     <h1>{% block title %}Buzzer!{% endblock %}</h1>
 {% endblock %}
 
-{% block content %}
-<button type="button" id="change-user" onclick="logout()">Change username</button>
-<button type="button" id="reset-button" onclick="resetBuzzer()">Reset button</button>
+{% block rightAux %}
+    <button type="button" class="aux-btn" id="change-user" onclick="logout()">Change username</button>
+{% endblock %}
 
-<button type="button" id="buzzer" onclick="buzzerClick()">
-    {{ request.cookies.get('user') }}
-</button>
+{% block leftAux %}
+    <button type="button" class="aux-btn" id="reset-button" onclick="sendResetBuzzerSig()">Reset button</button>
+{% endblock %}
 
-<h2 id="player-title"></h2>
-<ul id="player-list"></ul>
+{% block centered %}
+    <button type="button" id="buzzer" onclick="buzzerClick()">
+        {{ request.cookies.get('user') }}
+    </button>
+{% endblock %}
 
-<script>
-    setup(
-        '{{ request.cookies['user'] }}',
-        '{{ url_for('logout') }}',
-        '{{ url_for('api.click') }}',
-        '{{ url_for('api.reset') }}',
-        '{{ url_for('api.wait_buzz') }}',
-        '{{ url_for('api.wait_reset') }}',
-        '{{ url_for('api.get_users') }}'
-    );
+{#<h2 id="player-title"></h2>#}
+{#<ul id="player-list"></ul>#}
 
-    {% if g.clicked != None %}
-        // start prep
-        {% if g.clicked != request.cookies['user'] %}
-            failure("{{ g.clicked }}");
-        {% else %}
-            success();
+{% block otherContent %}
+    <script>
+        setup(
+            '{{ request.cookies['user'] }}',
+            '{{ url_for('logout') }}',
+            '{{ url_for('api.click') }}',
+            '{{ url_for('api.reset') }}',
+            '{{ url_for('api.wait_buzz') }}',
+            '{{ url_for('api.wait_reset') }}',
+            '{{ url_for('api.get_users') }}',
+            'green', 'orange'
+        );
+
+        {# check if someone already buzzed and set the view accordingly #}
+        {% if g.clicked != None %}
+            // start prep
+            {% if g.clicked != request.cookies['user'] %}
+                failure("{{ g.clicked }}");
+            {% else %}
+                success();
+            {% endif %}
+            clicked = true;
+            // end prep
         {% endif %}
-        // end prep
-    {% endif %}
 
-    updateUserList();
-    waitForClick();
-</script>
-{% endblock content %}
+        updateUserList();
+        waitForClick();
+    </script>
+{% endblock %}
