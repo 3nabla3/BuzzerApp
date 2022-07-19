@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="/static/buzzer.png">
-    {% block scriptSrc %}{% endblock %}
+    {% block scriptSrc %}
+    {% endblock %}
+    <script src="{{ url_for('static', filename='setup.js') }}"></script>
+    <script src="{{ url_for('static', filename='userList.js') }}"></script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -35,36 +38,55 @@
         {% block centered %}
         {% endblock %}
     </div>
+
+    <h3 id="player-list-title">Other players!</h3>
+    <ul id="player-list">
+
+    </ul>
+    <script>
+        setup(
+            '{{ request.cookies['user'] }}',
+            '{{ url_for('api.get_users') }}',
+            '{{ url_for('logout') }}',
+            '{{ url_for('api.click') }}',
+            '{{ url_for('api.reset') }}',
+            '{{ url_for('api.wait_buzz') }}',
+            '{{ url_for('api.wait_reset') }}',
+            'green', 'orange'
+        );
+    </script>
+
     {% block otherContent %}
     {% endblock %}
-{# used to fade off the flashed messages #}
-<script>
-    function fade(element) {
-        let animationTime = 5;
-        let stepTime = 0.05;
+    {# used to fade off the flashed messages #}
+    <script>
+        function fade(element) {
+            let animationTime = 5;
+            let stepTime = 0.05;
 
-        let initialOp = 1; // initial opacity
-        let op = initialOp;
-        let per = stepTime / animationTime
-        console.log(per);
-        const timer = setInterval(function () {
-            if (op <= 0.1) {
-                clearInterval(timer);
-                element.style.display = 'none';
-            }
-            element.style.opacity = op;
-            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-            op -= initialOp * per;
-        }, stepTime * 1000);
-    }
+            let initialOp = 1; // initial opacity
+            let op = initialOp;
+            let per = stepTime / animationTime
+            console.log(per);
+            const timer = setInterval(function () {
+                if (op <= 0.1) {
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                }
+                element.style.opacity = op;
+                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+                op -= initialOp * per;
+            }, stepTime * 1000);
+        }
 
-    flashed = document.getElementsByClassName("flash");
-    for (let i = 0; i < flashed.length; i++) {
-        fade(flashed[i]);
-        console.log("Fading element");
-    }
+        flashed = document.getElementsByClassName("flash");
+        for (let i = 0; i < flashed.length; i++) {
+            fade(flashed[i]);
+            console.log("Fading element");
+        }
+        updateUserList();
 
-</script>
+    </script>
 
 </body>
 </html>
