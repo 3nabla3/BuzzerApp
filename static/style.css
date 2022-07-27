@@ -119,3 +119,21 @@ input {
     margin: auto;
 }
 
+#player-list-title {
+    color: #74B3CE;
+    font-size: 40px;
+}
+
+#player-list {
+    color: #74B3CE;
+    font-size: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+#player-list > div {
+    width: 10%;
+}

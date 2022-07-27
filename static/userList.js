@@ -18,15 +18,16 @@ function updateUserList() {
 
 function updateUserListText(userList) {
     let title = document.getElementById('player-list-title');
-    if (userList.length === 0 ||
-        userList.length === 1 && userList[0] === g_user)
+    // remove own name from list
+    let otherUsers = userList.filter(function(e) { return e !== g_user})
+    if (otherUsers.length === 0)
         title.innerHTML = "Oh no, you're playing alone!"
     else
-        title.innerHTML = "Other players:";
+        title.innerHTML = "Other players (" + otherUsers.length + "):";
 
     let list = document.getElementById('player-list');
     list.innerHTML = "";
-    for (let user of userList) {
-        if (user !== g_user) list.innerHTML += `<li>${user}</li>`
+    for (let user of otherUsers) {
+        list.innerHTML += `<div>${user}</div>`
     }
 }
