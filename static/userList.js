@@ -1,5 +1,6 @@
+// Code to update and display the list of logged in players
 
-function updateUserList() {
+function getUserList() {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', g_api_get_users_url);
 
@@ -10,7 +11,7 @@ function updateUserList() {
             let userList = JSON.parse(xhr.responseText);
             updateUserListText(userList);
             await new Promise(resolve => setTimeout(resolve, 1000));
-            updateUserList();
+            getUserList();
         }
     }
     xhr.send();

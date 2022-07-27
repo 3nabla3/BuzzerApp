@@ -1,7 +1,9 @@
+# Contains the main endpoints like the index page and log-in page
+
 import os
 
 from flask import Flask, render_template, request, flash,\
-	redirect, make_response, url_for, g, send_file, escape
+	redirect, make_response, url_for, g, send_file
 
 from api import api
 from config import GetConfig

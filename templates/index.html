@@ -22,16 +22,15 @@
     </button>
 {% endblock %}
 
-{#<h2 id="player-title"></h2>#}
-{#<ul id="player-list"></ul>#}
-
 {% block otherContent %}
     <script>
-        {# check if someone already buzzed and set the view accordingly #}
+        {# if someone already buzzed #}
         {% if g.clicked != None %}
             // start prep
+            {# if that person was not you #}
             {% if g.clicked != request.cookies['user'] %}
                 failure("{{ g.clicked }}");
+            {# if that person was you #}
             {% else %}
                 success();
             {% endif %}
@@ -39,6 +38,7 @@
             // end prep
         {% endif %}
 
+        // Starts the thread that continuously waits for someone to buzz
         waitForClick();
     </script>
 {% endblock %}

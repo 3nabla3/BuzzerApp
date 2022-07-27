@@ -1,4 +1,6 @@
-# import asyncio
+# Contains the endpoints that change the state of the server
+# and the endpoint to get the logged-in users
+
 import datetime
 import json
 from time import time, sleep
@@ -28,19 +30,16 @@ def click():
 
 @api.route('/reset', methods=['POST'])
 def reset():
-	# reset all global config variables used in 'click'
+	# reset who clicked the buzzer
 	GetConfig.clicked = None
-	GetConfig.clicks.clear()
-	GetConfig.wait_until = None
 	return 'reset'
 
 
-@api.route('/wait-buzz', methods=['post'])
+@api.route('/wait-buzz', methods=['POST'])
 def wait_buzz():
 	# wait until someone buzzes and return their username
 	while GetConfig.clicked is None:
 		sleep(0.3)
-
 	return escape(GetConfig.clicked)
 
 

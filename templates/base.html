@@ -58,8 +58,10 @@
 
     {% block otherContent %}
     {% endblock %}
-    {# used to fade off the flashed messages #}
+
+
     <script>
+        // used to fade off the flashed messages
         function fade(element) {
             let animationTime = 5;
             let stepTime = 0.05;
@@ -84,7 +86,9 @@
             fade(flashed[i]);
             console.log("Fading element");
         }
-        updateUserList();
+
+        // Runs the thread that continuously updates the list of users
+        getUserList();
 
     </script>
 
