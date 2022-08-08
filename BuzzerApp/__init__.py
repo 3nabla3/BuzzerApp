@@ -4,7 +4,7 @@ import os
 
 
 def create_app(test_config=None):
-	app = Flask(__name__, instance_relative_config=True)
+	app = Flask(__name__)
 	app.secret_key = os.urandom(12).hex()
 
 	@app.errorhandler(404)

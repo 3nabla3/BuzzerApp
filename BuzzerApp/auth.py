@@ -11,7 +11,7 @@ auth_bp = Blueprint('auth', __name__)
 # create a quick link to the icon image
 @auth_bp.route('/favicon.ico')
 def favicon():
-	return send_file('./' + url_for('static', filename='buzzer.jpg'), mimetype='image/jpg')
+	return send_file('.' + url_for('static', filename='buzzer.png'), mimetype='image/jpg')
 
 
 @auth_bp.route('/')
