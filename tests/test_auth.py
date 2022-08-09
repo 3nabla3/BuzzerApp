@@ -46,7 +46,10 @@ def test_logout(client, auth):
 	auth.login('test_user3')
 	assert client.get('/').status_code == 200
 
-	auth.logout()
+	resp = auth.logout()
+	assert '/login' in resp.location
+	assert resp.status_code == 302
+
 	resp = client.get('/')
 	assert resp.status_code == 307
 	assert '/login' in resp.location
