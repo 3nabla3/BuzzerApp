@@ -9,7 +9,7 @@ def test_favicon(app):
 def test_index(client, auth):
 	resp = client.get('/')
 	# make sure it redirects to log in
-	assert '/login' in resp.location
+	assert 'login' in resp.location
 
 	# test implicit registration
 	client.set_cookie('localhost', 'user', 'test_impl_user')
@@ -47,10 +47,10 @@ def test_logout(client, auth):
 	assert client.get('/').status_code == 200
 
 	resp = auth.logout()
-	assert '/login' in resp.location
+	assert 'login' in resp.location
 	assert resp.status_code == 302
 
 	resp = client.get('/')
 	assert resp.status_code == 307
-	assert '/login' in resp.location
+	assert 'login' in resp.location
 
