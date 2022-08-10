@@ -1,29 +1,20 @@
-import os
+# Contains the main endpoints like the index page and log-in page
 
-from flask import Flask, render_template, request, flash,\
-	redirect, make_response, url_for, g, send_file, escape
+from flask import render_template, request, flash, \
+	redirect, make_response, url_for, g, send_file, Blueprint
 
-from api import api
-from config import GetConfig
+from BuzzerApp.config import GetConfig
 
-app = Flask(__name__)
-app.secret_key = os.urandom(12).hex()
-app.register_blueprint(api)
-
-
-# redirect to the home page if the requested page does not exist
-@app.errorhandler(404)
-def not_found(_e):
-	return redirect(url_for('index'))
+auth_bp = Blueprint('auth', __name__)
 
 
 # create a quick link to the icon image
-@app.route('/favicon.ico')
+@auth_bp.route('/favicon.ico')
 def favicon():
-	return send_file('./' + url_for('static', filename='buzzer.jpg'), mimetype='image/jpg')
+	return send_file('.' + url_for('static', filename='buzzer.png'), mimetype='image/jpg')
 
 
-@app.route('/')
+@auth_bp.route('/')
 def index():
 	# if the user is not logged in, redirect to the login page
 	if 'user' not in request.cookies:
@@ -37,14 +28,14 @@ def index():
 
 	# set this for use in jinja parsing
 	g.clicked = GetConfig.clicked
-	resp = make_response(render_template('index.html'))
+	resp = make_response(render_template('auth/index.html'))
 	return resp
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'GET':
-		return render_template('login.html')
+		return render_template('auth/login.html')
 
 	# remove trailing whitespace on username
 	user = request.form['user'].strip()
@@ -57,17 +48,17 @@ def login():
 		code = 409  # conflict
 	else:
 		# register the user and set its cookie
-		resp = make_response(redirect(url_for('index')))
+		resp = make_response(redirect(url_for('auth.index')))
 		resp.set_cookie('user', user)
 		GetConfig.add_user(user)
 		return resp
 
-	return render_template('login.html'), code
+	return render_template('auth/login.html'), code
 
 
-@app.route('/logout', methods=['POST'])
+@auth_bp.route('/logout', methods=['POST'])
 def logout():
-	resp = redirect(url_for('login'))
+	resp = redirect(url_for('auth.login'))
 	# unregister the user and delete its cookie
 	user = request.cookies.get('user')
 	GetConfig.del_user(user)
@@ -75,9 +66,4 @@ def logout():
 
 	return resp
 
-
 # TODO: Make a special page that only an admin can view to kick users out and other privileged things
-
-
-if __name__ == '__main__':
-	app.run()

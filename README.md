@@ -1,4 +1,11 @@
-# Buzzer app
+# Buzzer App
+## Brief
+This web app runs a buzzer server. Once the app is running, clients can log in with their phone 
+or laptop and are then presented with a buzzer. If a user clicks the buzzer, all the other players
+receive a message saying who buzzed. The activated buzzer can be reset, and the game continues.
+
+Great for Trivia night or another game that requires buzzers.
+
 ## General preconditions
 This section requires the following preconditions:
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="/static/buzzer.png">
+    <link rel="icon" type="image/x-icon" href="/buzzer.png">
     {% block scriptSrc %}
     {% endblock %}
     <script src="{{ url_for('static', filename='setup.js') }}"></script>
@@ -40,14 +40,14 @@
     </div>
 
     <h3 id="player-list-title">Other players!</h3>
-    <ul id="player-list">
+    <div id="player-list">
 
-    </ul>
+    </div>
     <script>
         setup(
             '{{ request.cookies['user'] }}',
             '{{ url_for('api.get_users') }}',
-            '{{ url_for('logout') }}',
+            '{{ url_for('auth.logout') }}',
             '{{ url_for('api.click') }}',
             '{{ url_for('api.reset') }}',
             '{{ url_for('api.wait_buzz') }}',
@@ -58,8 +58,10 @@
 
     {% block otherContent %}
     {% endblock %}
-    {# used to fade off the flashed messages #}
+
+
     <script>
+        // used to fade off the flashed messages
         function fade(element) {
             let animationTime = 5;
             let stepTime = 0.05;
@@ -84,7 +86,9 @@
             fade(flashed[i]);
             console.log("Fading element");
         }
-        updateUserList();
+
+        // Runs the thread that continuously updates the list of users
+        getUserList();
 
     </script>
 
