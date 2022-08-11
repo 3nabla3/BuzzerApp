@@ -18,10 +18,10 @@ class AuthActions:
 		self._client = client
 
 	def login(self, user):
-		return self._client.post('/login', data={'user': user})
+		return self._client.post('/auth/login', data={'user': user})
 
 	def logout(self):
-		return self._client.post('/logout')
+		return self._client.post('/auth/logout')
 
 
 @pytest.fixture()

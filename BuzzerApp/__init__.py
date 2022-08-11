@@ -9,7 +9,10 @@ def create_app(test_config=None):
 
 	@app.errorhandler(404)
 	def not_found(_e):
-		return redirect(url_for('auth.index'))
+		return redirect(url_for('buzz.index'))
+
+	from BuzzerApp.buzzer import buzzer_bp
+	app.register_blueprint(buzzer_bp)
 
 	from BuzzerApp.auth import auth_bp
 	app.register_blueprint(auth_bp)

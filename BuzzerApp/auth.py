@@ -1,35 +1,11 @@
-# Contains the main endpoints like the index page and log-in page
+# Contains the authentication endpoints
 
 from flask import render_template, request, flash, \
-	redirect, make_response, url_for, g, send_file, Blueprint
+	redirect, make_response, url_for, Blueprint
 
 from BuzzerApp.config import GetConfig
 
-auth_bp = Blueprint('auth', __name__)
-
-
-# create a quick link to the icon image
-@auth_bp.route('/favicon.ico')
-def favicon():
-	return send_file('.' + url_for('static', filename='buzzer.png'), mimetype='image/jpg')
-
-
-@auth_bp.route('/')
-def index():
-	# if the user is not logged in, redirect to the login page
-	if 'user' not in request.cookies:
-		return redirect('login', code=307)
-
-	# if the cookie is valid but the user isn't registered within the app,
-	# implicitly register the user
-	user = request.cookies['user']
-	if user not in GetConfig.users:
-		GetConfig.add_user(user, implied=True)
-
-	# set this for use in jinja parsing
-	g.clicked = GetConfig.clicked
-	resp = make_response(render_template('auth/index.html'))
-	return resp
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -48,7 +24,7 @@ def login():
 		code = 409  # conflict
 	else:
 		# register the user and set its cookie
-		resp = make_response(redirect(url_for('auth.index')))
+		resp = make_response(redirect(url_for('buzz.index')))
 		resp.set_cookie('user', user)
 		GetConfig.add_user(user)
 		return resp

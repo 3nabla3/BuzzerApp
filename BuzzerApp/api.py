@@ -9,7 +9,7 @@ from flask import Blueprint, request, make_response, escape
 
 from BuzzerApp.config import GetConfig
 
-api_bp = Blueprint('api', __name__)
+api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
 @api_bp.route('/click', methods=['POST'])

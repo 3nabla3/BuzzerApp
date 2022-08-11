@@ -1,4 +1,5 @@
 import pytest
+from flask import url_for
 
 
 def test_favicon(app):
@@ -20,7 +21,7 @@ def test_index(client, auth):
 
 
 def test_login_get(client):
-	resp = client.get('/login')
+	resp = client.get('/auth/login')
 	assert b'login' in resp.data
 	# make sure there is no redirect, just the page is shown
 	assert resp.location is None
@@ -35,7 +36,7 @@ def test_login_get(client):
 )
 def test_login_post(client, username, message, code, cookie):
 	# post request
-	resp = client.post('/login', data={'user': username})
+	resp = client.post('/auth/login', data={'user': username})
 	assert message in str(resp.data)
 	assert code == resp.status_code
 	if cookie is not None:
