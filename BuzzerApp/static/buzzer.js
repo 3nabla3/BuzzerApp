@@ -42,7 +42,7 @@ function logout() {
     xhr.open('POST', g_logout_url)
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            window.location.reload();
+            // window.location.reload();
             console.log(xhr.responseText);
         }
     }

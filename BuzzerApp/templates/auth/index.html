@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Buzzer!{% endblock %}
+
 {% block scriptSrc %}
     <script src="{{ url_for('static', filename='buzzer.js') }}"></script>
-{% endblock %}
-
-{% block header %}
-    <h1>{% block title %}Buzzer!{% endblock %}</h1>
 {% endblock %}
 
 {% block rightAux %}

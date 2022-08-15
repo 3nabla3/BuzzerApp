@@ -11,7 +11,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'GET':
-		return render_template('auth/login.html')
+		return render_template('auth/login/normal_login.html')
 
 	# remove trailing whitespace on username
 	user = request.form['user'].strip()
@@ -29,7 +29,7 @@ def login():
 		GetConfig.add_user(user)
 		return resp
 
-	return render_template('auth/login.html'), code
+	return render_template('auth/login/normal_login.html'), code
 
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -42,4 +42,9 @@ def logout():
 
 	return resp
 
-# TODO: Make a special page that only an admin can view to kick users out and other privileged things
+
+@auth_bp.route('/admin', methods=['GET', 'POST'])
+def admin():
+	if request.method == "GET":
+		return render_template('auth/login/admin_login.html')
+	return "admin post answer"

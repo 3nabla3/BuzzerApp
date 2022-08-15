@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="/buzzer.png">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='buzzer.png') }}">
     {% block scriptSrc %}
     {% endblock %}
     <script src="{{ url_for('static', filename='setup.js') }}"></script>
@@ -13,7 +13,7 @@
 
 <body>
     <header>
-        {% block header %}{% endblock %}
+        <h1>{{ self.title() }}</h1>
     </header>
 
     <section id="aux-sec">
@@ -88,7 +88,7 @@
         }
 
         // Runs the thread that continuously updates the list of users
-        getUserList();
+        {#getUserList();#}
 
     </script>
 
