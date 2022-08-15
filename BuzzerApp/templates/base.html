@@ -47,6 +47,7 @@
         setup(
             '{{ request.cookies['user'] }}',
             '{{ url_for('api.get_users') }}',
+            '{{ url_for('auth.login') }}',
             '{{ url_for('auth.logout') }}',
             '{{ url_for('api.click') }}',
             '{{ url_for('api.reset') }}',

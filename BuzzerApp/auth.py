@@ -11,7 +11,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'GET':
-		return render_template('auth/login/normal_login.html')
+		return render_template('auth/normal_login.html')
 
 	# remove trailing whitespace on username
 	user = request.form['user'].strip()
@@ -25,11 +25,11 @@ def login():
 	else:
 		# register the user and set its cookie
 		resp = make_response(redirect(url_for('buzz.index')))
-		resp.set_cookie('user', user)
+		resp.set_cookie('user', user, samesite=None)
 		GetConfig.add_user(user)
 		return resp
 
-	return render_template('auth/login/normal_login.html'), code
+	return render_template('auth/normal_login.html'), code
 
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -46,5 +46,6 @@ def logout():
 @auth_bp.route('/admin', methods=['GET', 'POST'])
 def admin():
 	if request.method == "GET":
-		return render_template('auth/login/admin_login.html')
-	return "admin post answer"
+		return render_template('auth/admin_login.html')
+	print(request.form['pass'])
+	return redirect(url_for('auth.login'))

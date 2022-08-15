@@ -37,16 +37,8 @@ function logout() {
     let center = document.getElementById("centered");
     center.style.animation = "0.2s ease-in-out 1 zoomOut";
     console.log('logging out!');
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', g_logout_url)
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // window.location.reload();
-            console.log(xhr.responseText);
-        }
-    }
-    xhr.send();
+    // redirect to login page
+    window.location = g_login_url;
 }
 
 // when you click the buzzer
